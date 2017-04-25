@@ -1,0 +1,88 @@
+{
+    "author": "kippingpeter@gmail.com",
+    "dependencies": {},
+    "keywords": [],
+    "name": "c25k-mk2",
+    "pebble": {
+        "displayName": "C25K MK2",
+        "enableMultiJS": true,
+        "messageKeys": [],
+        "projectType": "native",
+        "resources": {
+            "media": [
+                {
+                    "file": "images/menu_icon_tick_invert",
+                    "name": "IMAGE_MENU_ICON_TICK_INVERT",
+                    "targetPlatforms": null,
+                    "type": "bitmap"
+                },
+                {
+                    "file": "images/menu_icon_cross_invert",
+                    "name": "IMAGE_MENU_ICON_CROSS_INVERT",
+                    "targetPlatforms": null,
+                    "type": "bitmap"
+                },
+                {
+                    "file": "images/menu_icon_previous",
+                    "name": "IMAGE_MENU_ICON_PREVIOUS",
+                    "targetPlatforms": null,
+                    "type": "bitmap"
+                },
+                {
+                    "file": "images/menu_icon_next",
+                    "name": "IMAGE_MENU_ICON_NEXT",
+                    "targetPlatforms": null,
+                    "type": "bitmap"
+                },
+                {
+                    "file": "images/menu_icon_play",
+                    "name": "IMAGE_MENU_ICON_PLAY",
+                    "targetPlatforms": null,
+                    "type": "bitmap"
+                },
+                {
+                    "file": "images/menu_icon_pause",
+                    "name": "IMAGE_MENU_ICON_PAUSE",
+                    "targetPlatforms": null,
+                    "type": "bitmap"
+                },
+                {
+                    "file": "images/menu_icon_arrow_down",
+                    "name": "IMAGE_MENU_ICON_ARROW_DOWN",
+                    "targetPlatforms": null,
+                    "type": "bitmap"
+                },
+                {
+                    "file": "images/menu_icon_arrow_up",
+                    "name": "IMAGE_MENU_ICON_ARROW_UP",
+                    "targetPlatforms": null,
+                    "type": "bitmap"
+                },
+                {
+                    "file": "images/menu_icon_arrow_right",
+                    "name": "IMAGE_MENU_ICON_ARROW_RIGHT",
+                    "targetPlatforms": null,
+                    "type": "bitmap"
+                },
+                {
+                    "file": "images/menu_icon_cross",
+                    "name": "IMAGE_MENU_ICON_CROSS",
+                    "targetPlatforms": null,
+                    "type": "bitmap"
+                },
+                {
+                    "file": "images/menu_icon_tick",
+                    "name": "IMAGE_MENU_ICON_TICK",
+                    "targetPlatforms": null,
+                    "type": "bitmap"
+                }
+            ]
+        },
+        "sdkVersion": "3",
+        "uuid": "2287a947-fd44-4245-ad49-a9796c5b0ad5",
+        "watchapp": {
+            "watchface": false
+        }
+    },
+    "version": "1.0.0"
+}
