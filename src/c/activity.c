@@ -120,8 +120,64 @@ static void setup_pause_play_icons() {
   action_bar_layer_set_icon_animated(s_activity_action_bar, BUTTON_ID_SELECT, isPaused ? s_activity_menu_play : s_activity_menu_pause, true);
 }
 
+static void timer_listener(void *data) {
+  timeSpentInCurrentStep++;
+  int currentStepLength = 0;
+  if(isCurrentlyInWarmupStep()) {
+    currentStepLength = WARMUP_STEP_DURATION;
+  } else if(isCurrentlyInCooldownStep()) {
+    currentStepLength = COOLDOWN_STEP_DURATION;
+  } else {
+    currentStepLength = day->steps[currentStepIndex-1].duration;
+  }
+
+  if (timeSpentInCurrentStep > currentStepLength) {
+    timeSpentInCurrentStep = 0;
+    currentStepIndex++;
+    check_for_day_complete();
+  }
+  timer = app_timer_register(1000, timer_listener, NULL);
+  redraw_text_layers();
+}
+
+static void clear_timer() {
+  if(timer != NULL) {
+    app_timer_cancel(timer);
+    timer = NULL;
+  }
+}
+
+static void reset_timer() {
+  if(timer != NULL) {
+    clear_timer();
+    timer = app_timer_register(1000, timer_listener, NULL);
+  }
+}
+
+static void check_state_of_timer() {
+  if (isPaused) {
+    if(timer != NULL) {
+      APP_LOG(APP_LOG_LEVEL_DEBUG, "Clearing timer, paused and timer enabled");
+      clear_timer();
+    } else {
+      APP_LOG(APP_LOG_LEVEL_DEBUG, "Doing nothing, paused and timer disabled");
+    }
+  } else {
+    if (!isCurrentlyInCompleteStep() && timer == NULL)   {
+      APP_LOG(APP_LOG_LEVEL_DEBUG, "Starting timer, not paused, not in complete, timer disabled");
+      timer = app_timer_register(1000, timer_listener, NULL);
+    } else if (isCurrentlyInCompleteStep() && timer != NULL){
+      APP_LOG(APP_LOG_LEVEL_DEBUG, "Clearing timer, not paused, in complete, timer enabled");
+      clear_timer();
+    } else {
+      APP_LOG(APP_LOG_LEVEL_DEBUG, "Doing nothing");
+    }
+  }
+}
+
 static void activity_menu_select_callback(ClickRecognizerRef recognizer, void *context) {
   isPaused = !isPaused;
+  check_state_of_timer();
   setup_pause_play_icons();
 }
 
@@ -129,7 +185,9 @@ static void activity_menu_up_callback(ClickRecognizerRef recognizer, void *conte
   if (isWithinTimeFrameToJumpToPreviousStep() && !isCurrentlyInWarmupStep()) {
     currentStepIndex--;
   }
+  reset_timer();
   timeSpentInCurrentStep = 0;
+  check_state_of_timer();
   redraw_text_layers();
 }
 
@@ -139,6 +197,8 @@ static void activity_menu_down_callback(ClickRecognizerRef recognizer, void *con
       timeSpentInCurrentStep = 0;
       check_for_day_complete();
   }
+  reset_timer();
+  check_state_of_timer();
   redraw_text_layers();
 }
 
@@ -157,29 +217,6 @@ static void activity_load_action_bar(Window *window) {
   action_bar_layer_set_icon_animated(s_activity_action_bar, BUTTON_ID_DOWN, s_activity_menu_next, true);
 }
 
-static void second_tick_handler(struct tm *tick_time, TimeUnits units_changed){
-  if(!isCurrentlyInCompleteStep()) {
-    if(!isPaused) {
-      timeSpentInCurrentStep++;
-    }
-    int currentStepLength = 0;
-    if(isCurrentlyInWarmupStep()) {
-      currentStepLength = WARMUP_STEP_DURATION;
-    } else if(isCurrentlyInCooldownStep()) {
-      currentStepLength = COOLDOWN_STEP_DURATION;
-    } else {
-      currentStepLength = day->steps[currentStepIndex-1].duration;
-    }
-    
-    if (timeSpentInCurrentStep > currentStepLength) {
-      timeSpentInCurrentStep = 0;
-      currentStepIndex++;
-      check_for_day_complete();
-    }
-  }
-  redraw_text_layers();
-}
-
 static void activity_window_load(Window *window) {
   APP_LOG(APP_LOG_LEVEL_DEBUG, "Loading activity window");
   currentStepIndex = 0;
@@ -189,7 +226,7 @@ static void activity_window_load(Window *window) {
   activity_load_status_bar(window);
   activity_load_action_bar(window);
   activity_load_main_layers(window);
-  tick_timer_service_subscribe(SECOND_UNIT, second_tick_handler);
+  check_state_of_timer();
 }
 
 static void activity_widow_unload() {
