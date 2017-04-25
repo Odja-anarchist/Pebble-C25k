@@ -47,6 +47,7 @@ static void days_list_menu_down_callback(ClickRecognizerRef recognizer, void *co
 
 static void days_list_long_press_handler(ClickRecognizerRef recognizer, void *context) {
   bool rowHasBeenCompleted = persist_read_bool(selectedDay);
+  vibes_long_pulse();
   persist_write_bool(selectedDay, !rowHasBeenCompleted);
   s_menu_items[selectedDay].icon = !rowHasBeenCompleted ? s_menu_icon_tick_invert : s_menu_icon_cross_invert;
   layer_mark_dirty(simple_menu_layer_get_layer(s_simple_menu_layer));

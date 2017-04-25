@@ -135,6 +135,7 @@ static void timer_listener(void *data) {
     timeSpentInCurrentStep = 0;
     currentStepIndex++;
     check_for_day_complete();
+    vibes_long_pulse();
   }
   timer = app_timer_register(1000, timer_listener, NULL);
   redraw_text_layers();
@@ -177,6 +178,7 @@ static void check_state_of_timer() {
 
 static void activity_menu_select_callback(ClickRecognizerRef recognizer, void *context) {
   isPaused = !isPaused;
+  vibes_short_pulse();
   check_state_of_timer();
   setup_pause_play_icons();
 }
@@ -187,6 +189,7 @@ static void activity_menu_up_callback(ClickRecognizerRef recognizer, void *conte
   }
   reset_timer();
   timeSpentInCurrentStep = 0;
+  vibes_short_pulse();
   check_state_of_timer();
   redraw_text_layers();
 }
@@ -198,6 +201,7 @@ static void activity_menu_down_callback(ClickRecognizerRef recognizer, void *con
       check_for_day_complete();
   }
   reset_timer();
+  vibes_short_pulse();
   check_state_of_timer();
   redraw_text_layers();
 }
@@ -230,6 +234,7 @@ static void activity_window_load(Window *window) {
 }
 
 static void activity_widow_unload() {
+  clear_timer();
   APP_LOG(APP_LOG_LEVEL_DEBUG, "Unloading activity window");
   tick_timer_service_unsubscribe();
   status_bar_layer_destroy(s_activity_status_bar);
