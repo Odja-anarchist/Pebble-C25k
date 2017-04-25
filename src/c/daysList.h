@@ -5,9 +5,7 @@
 #include "utils.h"
 #include "preActivity.h"
 
-#define NUM_OF_DAYS_PER_WEEK 3
 #define NUM_OF_SECTIONS 1
-#define S_DAYS_LIST_HEADER_HEIGHT 24
 
 void days_list_window_create();
 void days_list_show();

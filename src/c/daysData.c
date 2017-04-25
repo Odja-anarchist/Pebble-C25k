@@ -10,6 +10,10 @@ void day_initialise(struct day* this, int numSteps, char* description, int steps
     this->steps[i] = (struct step) {.duration = steps[i], .isWalk = i % 2 == 1};
   }
   this->dayIndex = dayIndex;
+  this->title = malloc(sizeof("Week 8"));
+  this->subtitle = malloc(sizeof("Day 3"));
+  snprintf(this->title, sizeof(this->title), "Week %d", (dayIndex / NUM_OF_DAYS_PER_WEEK) + 1);
+  snprintf(this->subtitle, sizeof(this->subtitle),"Day %d", (dayIndex % NUM_OF_DAYS_PER_WEEK) + 1);
   dayIndex++;
 }
 
@@ -96,7 +100,10 @@ struct day* get_days_data() {
 
 void freeDays(struct day *days) {
   for(int counter = 0 ; counter<NUM_TOTAL_DAYS ; counter++) {
-      free(days[counter].steps);
+    struct day target_day = days[counter];
+    free(target_day.steps);
+    free(target_day.title);
+    free(target_day.subtitle);
   }
   free(days);
 }

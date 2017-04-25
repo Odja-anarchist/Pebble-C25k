@@ -3,6 +3,7 @@
 #include <pebble.h>
 
 #define NUM_TOTAL_DAYS 24
+#define NUM_OF_DAYS_PER_WEEK 3
 
 struct step {
   int duration;
@@ -10,6 +11,8 @@ struct step {
 };
 
 struct day {
+  char *title;
+  char *subtitle;
   int numSteps;
   struct step *steps;
   char *description;
