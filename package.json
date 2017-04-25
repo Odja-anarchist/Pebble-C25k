@@ -2,14 +2,21 @@
     "author": "kippingpeter@gmail.com",
     "dependencies": {},
     "keywords": [],
-    "name": "c25k-mk2",
+    "name": "c25k",
     "pebble": {
-        "displayName": "C25K MK2",
+        "displayName": "Couch To 5K",
         "enableMultiJS": true,
         "messageKeys": [],
         "projectType": "native",
         "resources": {
             "media": [
+                {
+                    "file": "images/menu_icon",
+                    "menuIcon": true,
+                    "name": "MENU_ICON",
+                    "targetPlatforms": null,
+                    "type": "bitmap"
+                },
                 {
                     "file": "images/menu_icon_tick_invert",
                     "name": "IMAGE_MENU_ICON_TICK_INVERT",
@@ -79,6 +86,13 @@
             ]
         },
         "sdkVersion": "3",
+        "targetPlatforms": [
+            "aplite",
+            "basalt",
+            "chalk",
+            "diorite",
+            "emery"
+        ],
         "uuid": "2287a947-fd44-4245-ad49-a9796c5b0ad5",
         "watchapp": {
             "watchface": false

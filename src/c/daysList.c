@@ -47,7 +47,7 @@ static void days_list_menu_down_callback(ClickRecognizerRef recognizer, void *co
 
 static void days_list_long_press_handler(ClickRecognizerRef recognizer, void *context) {
   bool rowHasBeenCompleted = persist_read_bool(selectedDay);
-  vibes_long_pulse();
+  vibes_short_pulse();
   persist_write_bool(selectedDay, !rowHasBeenCompleted);
   s_menu_items[selectedDay].icon = !rowHasBeenCompleted ? s_menu_icon_tick_invert : s_menu_icon_cross_invert;
   layer_mark_dirty(simple_menu_layer_get_layer(s_simple_menu_layer));
@@ -126,7 +126,6 @@ static void days_list_load_days_list(Window *window) {
 }
 
 static void days_list_window_load(Window *window) {
-  APP_LOG(APP_LOG_LEVEL_DEBUG, "Loading days list window");
   days_list_load_bitmaps();
   days_list_create_menu_items();
   days_list_load_header_layer(window);
@@ -136,7 +135,6 @@ static void days_list_window_load(Window *window) {
 }
 
 static void days_list_window_unload(Window *window) {
-  APP_LOG(APP_LOG_LEVEL_DEBUG, "Unloading days list window");
   simple_menu_layer_destroy(s_simple_menu_layer);
   text_layer_destroy(s_days_list_header_layer);
   gbitmap_destroy(s_menu_icon_tick);
@@ -157,7 +155,6 @@ static void days_list_window_appear(Window *window) {
 
 static void load_days_data() {
   days = get_days_data();
-  APP_LOG(APP_LOG_LEVEL_DEBUG, "Loaded days data");
 }
 
 void days_list_window_create() {

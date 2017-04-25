@@ -135,7 +135,8 @@ static void timer_listener(void *data) {
     timeSpentInCurrentStep = 0;
     currentStepIndex++;
     check_for_day_complete();
-    vibes_long_pulse();
+    light_enable_interaction();
+    vibes_short_pulse();
   }
   timer = app_timer_register(1000, timer_listener, NULL);
   redraw_text_layers();
