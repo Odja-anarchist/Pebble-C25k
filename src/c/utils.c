@@ -8,3 +8,16 @@ GRect get_window_bounds(Window *window) {
   bounds.size.h = bounds.size.h - STATUS_BAR_LAYER_HEIGHT;
   return bounds;
 }
+
+void toggle_day_complete_state(int day, bool forceCompleted) {
+  if(forceCompleted) {
+    persist_write_bool(day, true);
+    persist_write_int(LAST_COMPLETED_DAY_MENU_INDEX, day);
+  } else {
+    bool day_was_completed = persist_read_bool(day);
+    persist_write_bool(day, !day_was_completed);
+    if(!day_was_completed) {
+      persist_write_int(LAST_COMPLETED_DAY_MENU_INDEX, day);
+    }
+  }
+}

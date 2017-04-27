@@ -4,6 +4,8 @@
 
 #define NUM_TOTAL_DAYS 24
 #define NUM_OF_DAYS_PER_WEEK 3
+#define SIZE_OF_WEEK_STRING 7
+#define SIZE_OF_DAY_STRING 6
 
 struct step {
   int duration;

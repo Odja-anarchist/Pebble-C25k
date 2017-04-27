@@ -30,10 +30,13 @@ static void pre_activity_load_action_bar(Window *window) {
 
 static void pre_activity_load_activity_text(Window *window) {
   GRect bounds = get_window_bounds(window);
+  bounds.size.w = bounds.size.w - SCREEN_PADDING_PIXELS;
   s_pre_activity_text = text_layer_create(bounds);
   text_layer_set_text(s_pre_activity_text, day->description);
   text_layer_set_font(s_pre_activity_text, fonts_get_system_font(FONT_KEY_GOTHIC_24_BOLD));
   layer_add_child(window_get_root_layer(window), text_layer_get_layer(s_pre_activity_text));
+  text_layer_set_text_alignment(s_pre_activity_text, GTextAlignmentCenter);
+  text_layer_enable_screen_text_flow_and_paging(s_pre_activity_text, SCREEN_PADDING_PIXELS);
 }
 
 static void pre_activity_load_menu_bitmaps() {
@@ -41,7 +44,6 @@ static void pre_activity_load_menu_bitmaps() {
 }
 
 static void pre_activity_window_load(Window *window) {
-  APP_LOG(APP_LOG_LEVEL_DEBUG, "Loading pre-activity window");
   pre_activity_load_menu_bitmaps();
   pre_activity_load_action_bar(window);
   pre_activity_load_status_bar(window);
@@ -49,9 +51,9 @@ static void pre_activity_window_load(Window *window) {
 }
 
 static void pre_activity_window_unload(Window *window) {
-  APP_LOG(APP_LOG_LEVEL_DEBUG, "Unloading pre-activity window");
   text_layer_destroy(s_pre_activity_text);
   status_bar_layer_destroy(s_pre_activity_status_bar);
+  action_bar_layer_remove_from_window(s_pre_activity_action_bar);
   action_bar_layer_destroy(s_pre_activity_action_bar);
   gbitmap_destroy(s_pre_activity_menu_arrow_right);
 }

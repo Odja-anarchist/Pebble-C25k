@@ -78,7 +78,7 @@ static void activity_load_directions_text_layer(Window *window) {
 
 static void check_for_day_complete() {
   if(isCurrentlyInCompleteStep()) {
-      persist_write_bool(day->dayIndex, true);
+    toggle_day_complete_state(day->dayIndex, true);
   }
 }
 
