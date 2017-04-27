@@ -53,27 +53,45 @@ static void activity_load_step_text_layer(Window *window) {
   s_activity_step_layer = text_layer_create(bounds);
   text_layer_set_text_alignment(s_activity_step_layer, GTextAlignmentCenter);
   layer_add_child(window_get_root_layer(window), text_layer_get_layer(s_activity_step_layer));
-  text_layer_set_font(s_activity_step_layer, fonts_get_system_font(FONT_KEY_GOTHIC_24_BOLD));
+   #if defined(PBL_PLATFORM_EMERY)
+    text_layer_set_font(s_activity_step_layer, fonts_get_system_font(FONT_KEY_GOTHIC_28_BOLD));
+  #else
+    text_layer_set_font(s_activity_step_layer, fonts_get_system_font(FONT_KEY_GOTHIC_24_BOLD));
+  #endif
+  text_layer_enable_screen_text_flow_and_paging(s_activity_step_layer, 3);
 }
 
 static void activity_load_clock_text_layer(Window *window) {
-  GRect bounds = get_window_bounds(window);
-  bounds.origin.y = bounds.origin.y + S_ACTIVITY_STEP_LAYER_HEIGHT;
+  Layer *window_layer = window_get_root_layer(window);
+  GRect bounds = layer_get_frame(window_layer);
+  bounds.origin.y =  (bounds.size.h / 2) - (S_ACTIVITY_CLOCK_LAYER_HEIGHT / 2);
+  bounds.size.w = bounds.size.w - ACTION_BAR_WIDTH;
   bounds.size.h = S_ACTIVITY_CLOCK_LAYER_HEIGHT;
   s_activity_clock_layer = text_layer_create(bounds);
   text_layer_set_text_alignment(s_activity_clock_layer, GTextAlignmentCenter);
   layer_add_child(window_get_root_layer(window), text_layer_get_layer(s_activity_clock_layer));
-  text_layer_set_font(s_activity_clock_layer, fonts_get_system_font(FONT_KEY_BITHAM_34_MEDIUM_NUMBERS));
+   #if defined(PBL_PLATFORM_EMERY)
+    text_layer_set_font(s_activity_clock_layer, fonts_get_system_font(FONT_KEY_BITHAM_42_BOLD));
+  #else
+    text_layer_set_font(s_activity_clock_layer, fonts_get_system_font(FONT_KEY_BITHAM_34_MEDIUM_NUMBERS));
+  #endif
+  text_layer_enable_screen_text_flow_and_paging(s_activity_clock_layer, 3);
 }
 
 static void activity_load_directions_text_layer(Window *window) {
+  int layerHeight = S_ACTIVITY_CLOCK_LAYER_HEIGHT;
   GRect bounds = get_window_bounds(window);
-  bounds.origin.y = bounds.origin.y + S_ACTIVITY_STEP_LAYER_HEIGHT + S_ACTIVITY_CLOCK_LAYER_HEIGHT;
-  bounds.size.h = S_ACTIVITY_DIRECTIONS_LAYER_HEIGHT;
+  bounds.origin.y = bounds.origin.y + (bounds.size.h - layerHeight);
+  bounds.size.h = layerHeight;
   s_activity_directions_layer = text_layer_create(bounds);
   text_layer_set_text_alignment(s_activity_directions_layer, GTextAlignmentCenter);
   layer_add_child(window_get_root_layer(window), text_layer_get_layer(s_activity_directions_layer));
-  text_layer_set_font(s_activity_directions_layer, fonts_get_system_font(FONT_KEY_GOTHIC_24_BOLD));
+  #if defined(PBL_PLATFORM_EMERY)
+    text_layer_set_font(s_activity_directions_layer, fonts_get_system_font(FONT_KEY_GOTHIC_28_BOLD));
+  #else
+    text_layer_set_font(s_activity_directions_layer, fonts_get_system_font(FONT_KEY_GOTHIC_24_BOLD));
+  #endif
+  text_layer_enable_screen_text_flow_and_paging(s_activity_directions_layer, 3);
 }
 
 static void check_for_day_complete() {

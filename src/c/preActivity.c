@@ -33,7 +33,11 @@ static void pre_activity_load_activity_text(Window *window) {
   bounds.size.w = bounds.size.w - SCREEN_PADDING_PIXELS;
   s_pre_activity_text = text_layer_create(bounds);
   text_layer_set_text(s_pre_activity_text, day->description);
-  text_layer_set_font(s_pre_activity_text, fonts_get_system_font(FONT_KEY_GOTHIC_24_BOLD));
+  #if defined(PBL_PLATFORM_EMERY)
+    text_layer_set_font(s_pre_activity_text, fonts_get_system_font(FONT_KEY_GOTHIC_28_BOLD));
+  #else
+    text_layer_set_font(s_pre_activity_text, fonts_get_system_font(FONT_KEY_GOTHIC_24_BOLD));
+  #endif
   layer_add_child(window_get_root_layer(window), text_layer_get_layer(s_pre_activity_text));
   text_layer_set_text_alignment(s_pre_activity_text, GTextAlignmentCenter);
   text_layer_enable_screen_text_flow_and_paging(s_pre_activity_text, SCREEN_PADDING_PIXELS);
