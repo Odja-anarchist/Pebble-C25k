@@ -10,10 +10,10 @@ static void day_initialise(struct day* this, int numSteps, char* description, in
     this->steps[i] = (struct step) {.duration = steps[i], .isWalk = i % 2 == 1};
   }
   this->dayIndex = dayIndex;
-  this->title = malloc(SIZE_OF_WEEK_STRING);
-  this->subtitle = malloc(SIZE_OF_DAY_STRING);
-  snprintf(this->title, SIZE_OF_WEEK_STRING, "Week %d", (dayIndex / NUM_OF_DAYS_PER_WEEK) + 1);
-  snprintf(this->subtitle, SIZE_OF_DAY_STRING,"Day %d", (dayIndex % NUM_OF_DAYS_PER_WEEK) + 1);
+  this->title = malloc(strlen(_("Week %d")));
+  this->subtitle = malloc(strlen(_("Day %d")));
+  snprintf(this->title, SIZE_OF_WEEK_STRING, _("Week %d"), (dayIndex / NUM_OF_DAYS_PER_WEEK) + 1);
+  snprintf(this->subtitle, SIZE_OF_DAY_STRING,_("Day %d"), (dayIndex % NUM_OF_DAYS_PER_WEEK) + 1);
   dayIndex++;
 }
 
@@ -27,28 +27,28 @@ static void setup_copy_week(struct day *days, int steps[], char *description, in
 // Week one
 static void setup_week_one(struct day *days) {
   int steps[] = {60,90,60,90,60,90,60,90,60,90,60,90,60,90,60,90};
-  char *description = "8 x (60s Run, 90s Walk).";
+  char *description = _("8 x (60s Run, 90s Walk).");
   setup_copy_week(days, steps, description, 16, 1);
 }
 
 // Week two
 static void setup_week_two(struct day *days) {
   int steps[] = {90,120,90,120,90,120,90,120,90,120,90,120};
-  char *description = "6 x (90s Run, 2m Walk).";
+  char *description = _("6 x (90s Run, 2m Walk).");
   setup_copy_week(days, steps, description, 12, 2);
 }
 
 //Week three
 static void setup_week_three(struct day *days) {
   int steps[] = {90,90,180,180,90,90,180,180};
-  char *description = "2x (90s Run, 90s Walk, 3m Run, 3m Walk).";
+  char *description = _("2x (90s Run, 90s Walk, 3m Run, 3m Walk).");
   setup_copy_week(days, steps, description, 8, 3);
 }
 
 //Week four
 static void setup_week_four(struct day *days) {
   int steps[] = {180,90,300,150,180,90,300};
-  char *description = "3m Run, 90s Walk, 5m Run, 2.5m Walk, 3m Run, 90s Walk, 5m Run.";
+  char *description = _("3m Run, 90s Walk, 5m Run, 2.5m Walk, 3m Run, 90s Walk, 5m Run.");
   setup_copy_week(days, steps, description, 7, 4);
 }
 
@@ -65,26 +65,26 @@ static void setup_week_five(struct day *days) {
 // Week six
 static void setup_week_six(struct day *days) {
   int day_one_steps[] = {300,180,480,180,300};
-  day_initialise(&days[15], 5, "5m Run, 3m Walk, 8m Run, 3m Walk, 5m Run.", day_one_steps);
+  day_initialise(&days[15], 5, _("5m Run, 3m Walk, 8m Run, 3m Walk, 5m Run."), day_one_steps);
   int day_two_steps[] = {600,180,600};
-  day_initialise(&days[16], 3, "10m Run, 3m Walk, 10m Run.", day_two_steps);
+  day_initialise(&days[16], 3, _("10m Run, 3m Walk, 10m Run."), day_two_steps);
   int day_three_steps[] = {1320};
-  day_initialise(&days[17], 1, "22m Run.", day_three_steps);
+  day_initialise(&days[17], 1, _("22m Run."), day_three_steps);
 }
 
 // Week seven
 static void setup_week_seven(struct day *days) {
   int steps[] = {1500};
-  char *description = "25m Run.";
+  char *description = _("25m Run.");
   setup_copy_week(days, steps, description, 1, 7);
 }
 
 // Week eight
 static void setup_week_eight(struct day *days) {
   int steps[] = {1680};
-  day_initialise(&days[21], 1, "28m Run.", steps);
-  day_initialise(&days[22], 1, "28m Run.", steps);
-  day_initialise(&days[23], 1, "30m Run.", (int[]){1800});
+  day_initialise(&days[21], 1, _("28m Run."), steps);
+  day_initialise(&days[22], 1, _("28m Run."), steps);
+  day_initialise(&days[23], 1, _("30m Run."), (int[]){1800});
 }
 
 struct day* get_days_data() {

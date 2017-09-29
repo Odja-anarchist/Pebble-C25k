@@ -4,12 +4,36 @@
     "keywords": [],
     "name": "c25k",
     "pebble": {
-        "displayName": "Couch To 5K",
+        "displayName": "C25K",
         "enableMultiJS": true,
         "messageKeys": [],
         "projectType": "native",
         "resources": {
             "media": [
+                {
+                    "file": "data/locale_german.bin",
+                    "name": "LOCALE_GERMAN",
+                    "targetPlatforms": null,
+                    "type": "raw"
+                },
+                {
+                    "file": "data/locale_spanish.bin",
+                    "name": "LOCALE_SPANISH",
+                    "targetPlatforms": null,
+                    "type": "raw"
+                },
+                {
+                    "file": "data/locale_french.bin",
+                    "name": "LOCALE_FRENCH",
+                    "targetPlatforms": null,
+                    "type": "raw"
+                },
+                {
+                    "file": "data/locale_english.bin",
+                    "name": "LOCALE_ENGLISH",
+                    "targetPlatforms": null,
+                    "type": "raw"
+                },
                 {
                     "file": "images/menu_icon",
                     "menuIcon": true,
@@ -98,5 +122,5 @@
             "watchface": false
         }
     },
-    "version": "1.0.0"
+    "version": "1.2.0"
 }

@@ -101,22 +101,27 @@ static void check_for_day_complete() {
 }
 
 static void redraw_text_layers() {
-  static char stepBuffer[] = "Step: 99/99";
-  snprintf(stepBuffer, sizeof(stepBuffer), "Step: %02d/%02d", currentStepIndex + 1, day->numSteps + 3);
+  static char stepBuffer[] = "99/99";
+  int totalSteps = day->numSteps + 2;
+  if(currentStepIndex + 1 == totalSteps + 1) {
+    snprintf(stepBuffer, sizeof(stepBuffer), "%s/%02d", "-", totalSteps);
+  } else {
+    snprintf(stepBuffer, sizeof(stepBuffer), "%02d/%02d", currentStepIndex + 1, totalSteps);
+  }
   text_layer_set_text(s_activity_step_layer, stepBuffer);
   
   int currentStepLength = 0;
   if(isCurrentlyInWarmupStep()) {
-    text_layer_set_text(s_activity_directions_layer, "WARMUP");
+    text_layer_set_text(s_activity_directions_layer, _("WARMUP"));
     currentStepLength = WARMUP_STEP_DURATION;
   } else if(isCurrentlyInCooldownStep()) {
-    text_layer_set_text(s_activity_directions_layer, "COOLDOWN");
+    text_layer_set_text(s_activity_directions_layer, _("COOLDOWN"));
     currentStepLength = COOLDOWN_STEP_DURATION;
   } else if(isCurrentlyInCompleteStep()) {
-    text_layer_set_text(s_activity_directions_layer, "COMPLETE!");
+    text_layer_set_text(s_activity_directions_layer, _("COMPLETE!"));
   } else {
     struct step currentStep = day->steps[currentStepIndex-1];
-    text_layer_set_text(s_activity_directions_layer, currentStep.isWalk ? "WALK" : "RUN");
+    text_layer_set_text(s_activity_directions_layer, currentStep.isWalk ? _("WALK") : _("RUN"));
     currentStepLength = currentStep.duration;
   }
   int timeLeftInCurrentStep = currentStepLength - timeSpentInCurrentStep;
@@ -138,28 +143,6 @@ static void setup_pause_play_icons() {
   action_bar_layer_set_icon_animated(s_activity_action_bar, BUTTON_ID_SELECT, isPaused ? s_activity_menu_play : s_activity_menu_pause, true);
 }
 
-static void timer_listener(void *data) {
-  timeSpentInCurrentStep++;
-  int currentStepLength = 0;
-  if(isCurrentlyInWarmupStep()) {
-    currentStepLength = WARMUP_STEP_DURATION;
-  } else if(isCurrentlyInCooldownStep()) {
-    currentStepLength = COOLDOWN_STEP_DURATION;
-  } else {
-    currentStepLength = day->steps[currentStepIndex-1].duration;
-  }
-
-  if (timeSpentInCurrentStep > currentStepLength) {
-    timeSpentInCurrentStep = 0;
-    currentStepIndex++;
-    check_for_day_complete();
-    light_enable_interaction();
-    vibes_short_pulse();
-  }
-  timer = app_timer_register(1000, timer_listener, NULL);
-  redraw_text_layers();
-}
-
 static void clear_timer() {
   if(timer != NULL) {
     app_timer_cancel(timer);
@@ -167,37 +150,58 @@ static void clear_timer() {
   }
 }
 
+static void timer_listener(void *data) {
+  timeSpentInCurrentStep++;
+  int currentStepLength = 0;
+  if(isCurrentlyInWarmupStep()) {
+    currentStepLength = WARMUP_STEP_DURATION;
+  } else if(isCurrentlyInCooldownStep()) {
+    currentStepLength = COOLDOWN_STEP_DURATION - 1;
+  } else if(isCurrentlyInCompleteStep()) {
+    currentStepLength = 1;
+  } else {
+    currentStepLength = day->steps[currentStepIndex-1].duration;
+  }
+  
+  if (timeSpentInCurrentStep > currentStepLength) {
+    timeSpentInCurrentStep = 0;
+    currentStepIndex++;
+    check_for_day_complete();
+    light_enable_interaction();
+    vibes_long_pulse();
+  }
+  if(!isCurrentlyInCompleteStep()) {
+    timer = app_timer_register(1000, timer_listener, NULL);
+  } else {
+    timer = NULL;
+  }
+  redraw_text_layers();
+}
+
 static void reset_timer() {
   if(timer != NULL) {
     clear_timer();
-    timer = app_timer_register(1000, timer_listener, NULL);
   }
+  timer = app_timer_register(1000, timer_listener, NULL);
 }
 
 static void check_state_of_timer() {
   if (isPaused) {
     if(timer != NULL) {
-      APP_LOG(APP_LOG_LEVEL_DEBUG, "Clearing timer, paused and timer enabled");
       clear_timer();
-    } else {
-      APP_LOG(APP_LOG_LEVEL_DEBUG, "Doing nothing, paused and timer disabled");
     }
   } else {
     if (!isCurrentlyInCompleteStep() && timer == NULL)   {
-      APP_LOG(APP_LOG_LEVEL_DEBUG, "Starting timer, not paused, not in complete, timer disabled");
       timer = app_timer_register(1000, timer_listener, NULL);
     } else if (isCurrentlyInCompleteStep() && timer != NULL){
-      APP_LOG(APP_LOG_LEVEL_DEBUG, "Clearing timer, not paused, in complete, timer enabled");
       clear_timer();
-    } else {
-      APP_LOG(APP_LOG_LEVEL_DEBUG, "Doing nothing");
     }
   }
 }
 
 static void activity_menu_select_callback(ClickRecognizerRef recognizer, void *context) {
   isPaused = !isPaused;
-  vibes_short_pulse();
+  vibes_long_pulse();
   check_state_of_timer();
   setup_pause_play_icons();
 }
@@ -208,7 +212,7 @@ static void activity_menu_up_callback(ClickRecognizerRef recognizer, void *conte
   }
   reset_timer();
   timeSpentInCurrentStep = 0;
-  vibes_short_pulse();
+  vibes_long_pulse();
   check_state_of_timer();
   redraw_text_layers();
 }
@@ -218,9 +222,9 @@ static void activity_menu_down_callback(ClickRecognizerRef recognizer, void *con
       currentStepIndex++;
       timeSpentInCurrentStep = 0;
       check_for_day_complete();
+      vibes_long_pulse();
   }
   reset_timer();
-  vibes_short_pulse();
   check_state_of_timer();
   redraw_text_layers();
 }
@@ -241,7 +245,6 @@ static void activity_load_action_bar(Window *window) {
 }
 
 static void activity_window_load(Window *window) {
-  APP_LOG(APP_LOG_LEVEL_DEBUG, "Loading activity window");
   currentStepIndex = 0;
   timeSpentInCurrentStep = 0;
   isPaused = false;
@@ -252,9 +255,8 @@ static void activity_window_load(Window *window) {
   check_state_of_timer();
 }
 
-static void activity_widow_unload() {
+static void activity_window_unload() {
   clear_timer();
-  APP_LOG(APP_LOG_LEVEL_DEBUG, "Unloading activity window");
   tick_timer_service_unsubscribe();
   status_bar_layer_destroy(s_activity_status_bar);
   action_bar_layer_destroy(s_activity_action_bar);
@@ -271,7 +273,7 @@ void activity_window_create() {
   s_activity_window = window_create();
   window_set_window_handlers(s_activity_window, (WindowHandlers) {
     .load = activity_window_load,
-    .unload = activity_widow_unload,
+    .unload = activity_window_unload,
   });
 }
 

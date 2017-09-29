@@ -1,6 +1,7 @@
 #pragma once
 
 #include <pebble.h>
+#include "localize.h"
 
 #define NUM_TOTAL_DAYS 24
 #define NUM_OF_DAYS_PER_WEEK 3

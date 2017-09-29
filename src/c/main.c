@@ -14,6 +14,7 @@ static void deinit() {
 }
 
 int main(void) {
+  locale_init();
   init();
   app_event_loop();
   deinit();
